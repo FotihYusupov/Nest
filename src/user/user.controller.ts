@@ -14,7 +14,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
 
-@Controller('users')
+@Controller('')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -26,7 +26,6 @@ export class UserController {
   @UseGuards(AuthGuard)
   @Get('me')
   getMe(@Request() req: Request & { user: { id: string } }) : Promise<object> {
-    console.log(req);
     return this.userService.getMe(req.user.id);
   }
 

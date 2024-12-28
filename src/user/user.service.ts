@@ -1,10 +1,10 @@
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { JwtService } from '@nestjs/jwt';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { User } from 'src/schemas/User.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { JwtService } from '@nestjs/jwt';
-import { User } from 'src/schemas/User.schema';
 
 @Injectable()
 export class UserService {
@@ -22,15 +22,15 @@ export class UserService {
     };
   }
 
-  async getMe (id: string) {
+  async getMe(id: string) {
     const user = await this.userModel.findById(id);
-    if(!user) throw new NotFoundException("User not found");
+    if (!user) throw new NotFoundException("User not found");
     const token = await this.jwtService.signAsync({ id: user._id });
     return {
       message: "Successfully fetched current user",
       data: {
         token,
-        ...user.toJSON(),
+        user,
       }
     };
   }
@@ -41,23 +41,23 @@ export class UserService {
     await user.save();
     return {
       message: "Successfully created user",
-      data: { token, ...user.toJSON() },
-    } 
+      data: { token, user },
+    }
   }
 
   async login(login: string, password: string) {
     const user = await this.userModel.findOne({ login, password });
-    if(!user) throw new NotFoundException("User not found");
+    if (!user) throw new NotFoundException("User not found");
     const token = await this.jwtService.signAsync({ id: user._id });
     return {
       message: "Successfully logged in",
-      data: { token, ...user.toJSON() },
+      data: { token, user },
     }
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
     const user = await this.userModel.findByIdAndUpdate(id, updateUserDto, { new: true });
-    if(!user) throw new NotFoundException("User not found");
+    if (!user) throw new NotFoundException("User not found");
     return {
       message: "Successfully updated user",
       data: user,
