@@ -37,7 +37,8 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto) {
     const user = new this.userModel(createUserDto);
-    const token = await this.jwtService.signAsync({ id: user._id });
+    user.role = "admin";
+    const token = await this.jwtService.signAsync({ id: user._id, role: user.role });
     await user.save();
     return {
       message: "Successfully created user",
@@ -48,7 +49,7 @@ export class UserService {
   async login(login: string, password: string) {
     const user = await this.userModel.findOne({ login, password });
     if (!user) throw new NotFoundException("User not found");
-    const token = await this.jwtService.signAsync({ id: user._id });
+    const token = await this.jwtService.signAsync({ id: user._id, role: user.role });
     return {
       message: "Successfully logged in",
       data: { token, user },

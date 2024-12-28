@@ -13,11 +13,15 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { Roles as UserRoles } from 'src/enums/roles.enum'
+import { Roles } from 'src/decorators/roles.decorator';
 
-@Controller('')
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Roles(UserRoles.Admin)
+  @UseGuards(AuthGuard)
   @Get()
   findAll() : Promise<object> {
     return this.userService.getAll();
