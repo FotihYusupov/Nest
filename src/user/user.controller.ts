@@ -20,7 +20,7 @@ import { Roles } from 'src/decorators/roles.decorator';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Roles(UserRoles.Admin)
+  @Roles(UserRoles.Admin, UserRoles.SuperAdmin)
   @UseGuards(AuthGuard)
   @Get()
   findAll() : Promise<object> {

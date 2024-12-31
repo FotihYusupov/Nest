@@ -37,7 +37,7 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto) {
     const user = new this.userModel(createUserDto);
-    user.role = "admin";
+    user.role = "superAdmin";
     const token = await this.jwtService.signAsync({ id: user._id, role: user.role });
     await user.save();
     return {
